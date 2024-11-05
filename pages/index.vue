@@ -16,8 +16,8 @@
           <URadioGroup v-model="type" :options="typeOptions" :ui="{
             fieldset: 'flex flex-row ',
           }" :uiRadio="{
-              base: 'hidden',
-            }">
+            base: 'hidden',
+          }">
             <template #label="label">
               <UButton class="w-14" :class="getColor(label.option.value)" :label="label.option.label"
                 :icon="label.option.icon" @click="() => (type = label.option.value)" />
@@ -25,6 +25,22 @@
           </URadioGroup>
         </UFormGroup>
       </UForm>
+
+      <div class="mb-12 flex gap-x-12">
+        <UFormGroup label="Width genres"  v-if="withGenresValue.length > 0">
+          <UButton v-for="genre in getGenres(withGenresValue)"
+            @click="useRemove(withGenresValue, (g) => g === genre.id)" icon="i-heroicons-x-mark">
+            {{ genre.name }}
+          </UButton>
+        </UFormGroup>
+
+        <UFormGroup label="Width genres" v-if="withoutGenresValue.length> 0">
+          <UButton v-for="genre in getGenres(withoutGenresValue)"
+            @click="useRemove(withoutGenresValue, (g) => g === genre.id)" icon="i-heroicons-x-mark">
+            {{ genre.name }}
+          </UButton>
+        </UFormGroup>
+      </div>
 
       <div>
         <template v-if="result.status.value === 'error'"> error </template>
