@@ -1,169 +1,115 @@
 <template>
-  <section class="py-12">
-    <UContainer>
-      <div>
-        <div class="flex flex-col md:flex-row gap-4">
-          <UFormGroup label="Type">
-            <URadioGroup
-              v-model="type"
-              :options="typeOptions"
-            />
-          </UFormGroup>
-          <!-- <UFormGroup label="Sort">
-            <USelect v-model="sort_by" :options="sortByOption" />
-          </UFormGroup> -->
-          <!-- <UFormGroup label="Adult">
-            <URadioGroup
-              v-model="include_adult"
-              legend="Choose something"
-              :options="[
-                {
-                  value: 'false',
-                  label: 'False',
-                },
-                {
-                  value: 'true',
-                  label: 'True',
-                },
-              ]"
-            />
-          </UFormGroup> -->
 
-          <UFormGroup label="Width Genres">
-            <USelectMenu
-              v-model="with_genres"
-              :options="genres?.genres"
-              option-attribute="name"
-              valueAttribute="id"
-              class="block !w-44"
-              multiple
-            />
-          </UFormGroup>
 
-          <UFormGroup label="Without Genres">
-            <USelectMenu
-              v-model="without_genres"
-              :options="genres?.genres"
-              option-attribute="name"
-              valueAttribute="id"
-              class="block !w-44"
-              multiple
-            />
-          </UFormGroup>
-        </div>
-        <UPagination
-          class="my-6"
-          v-model="page"
-          :total="500"
-          show-first
-          show-last
-        />
-        <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-4 my-4">
-          <DiscoverCard
-            v-for="item in discoverData?.results"
-            :item="item"
-            :genres="getGenres(item.genre_ids)"
-            :key="item.id"
-          />
-        </div>
+  <TheSection>
+    <TheContainer>
+      <div class="flex gap-x-8 mb-4">
+        <UButton @click="result.refresh()" icon="i-heroicons-arrow-path" />
+        <UButton @click="result.clear()" icon="i-heroicons-trash" />
+        <URadioGroup v-model="type" :options="typeOptions" />
+
+        <UFormGroup label="Width Genres">
+          <USelectMenu v-model="withGenresValue" :options="genres?.genres" option-attribute="name" valueAttribute="id"
+            class="block !w-44" multiple />
+        </UFormGroup>
+
+        <UFormGroup label="Without Genres">
+          <USelectMenu v-model="withoutGenresValue" :options="genres?.genres" option-attribute="name"
+            valueAttribute="id" class="block !w-44" multiple />
+        </UFormGroup>
+
+        <UPagination class="my-6" v-model="page" :total="500" show-first show-last />
+
       </div>
-    </UContainer>
-  </section>
+      <div class="">
+
+        <template v-if="result.status.value === 'error'"> error </template>
+        <template v-if="result.status.value === 'pending'">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            <USkeleton class="h-24 sm:h-26 lg:h-28 w-full " v-for="item in 5" />
+          </div>
+
+        </template>
+        <template v-if="result.status.value === 'success'">
+          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+            <template v-if="type === 'movie'">
+              <MovieCard v-for="item in result.data.value?.results" :movie="(item as MovieItem)"
+                :genres="getGenres(item.genre_ids)" />
+            </template>
+            <template v-if="type === 'tv'">
+              <TvCard v-for="item in result.data.value?.results" :tv="(item as TvItem)"
+                :genres="getGenres(item.genre_ids)" />
+            </template>
+          </div>
+        </template>
+      </div>
+
+
+
+    </TheContainer>
+  </TheSection>
+
+
+
+
 </template>
 <script setup lang="ts">
-import { useRouteQuery } from "@vueuse/router";
-import type { Discover } from "~/types/discoverModel";
+import type { Discover, MovieItem, TvItem } from "~/types/discoverModel";
 import type { Genre } from "~/types/genreModel";
-
+import { typeOptions } from '~/constants'
 const type = useRouteQuery<string>("type", "movie", {
   transform: String,
 });
+const { data: genres } = await useFetch<Genre>(`/api/v3/genre/${type.value}`);
 
-const typeOptions = [
-  {
-    value: "movie",
-    label: "Movie",
-  },
-  {
-    value: "tv",
-    label: "TV",
-  },
-];
 
-const with_genres = useRouteQuery<string[]>("with_genres", []);
-const without_genres = useRouteQuery<string[]>("without_genres", []);
+const withGenresValue = ref<number[]>([])
+const withGenresComputed = computed(() => {
+  let temp = ''
+  withGenresValue.value.forEach((item) => {
+    temp += `${item},`
+  })
+  return temp
+})
+watch(withGenresComputed, () => with_genres.value = withGenresComputed.value)
+const with_genres = useRouteQuery<string>("with_genres", '');
 
-const include_adult = useRouteQuery<string>("include_adult", "false", {
-  transform: String,
-});
-const sort_by = useRouteQuery<string>("sort_by");
 
-const sortByOption = [
-  {
-    label: "",
-    value: undefined,
-  },
-  {
-    label: "original_title.asc",
-    value: "original_title.asc",
-  },
-  {
-    label: "original_title.desc",
-    value: "original_title.desc",
-  },
-  {
-    label: "popularity.asc",
-    value: "popularity.asc",
-  },
-  {
-    label: "popularity.desc",
-    value: "popularity.desc",
-  },
-  {
-    label: "revenue.asc",
-    value: "revenue.asc",
-  },
-  {
-    label: "revenue.desc",
-    value: "revenue.desc",
-  },
-];
+
+const withoutGenresValue = ref<number[]>([])
+const withoutGenresComputed = computed(() => {
+  let temp = ''
+  withoutGenresValue.value.forEach((item) => {
+    temp += `${item},`
+  })
+  return temp
+})
+watch(withoutGenresComputed, () => without_genres.value = withoutGenresComputed.value)
+const without_genres = useRouteQuery<string>("without_genres", '');
+
+
+
 
 const page = useRouteQuery("page", "1", {
   transform: Number,
 });
-
+const api_key = ref("55ee9c566996339d9859d1ec68533e20");
 const setQuery = () => {
   return {
     page,
-    sort_by,
     with_genres,
     without_genres,
-    include_adult,
+    type,
+    api_key,
   };
 };
-
 const computedApi = computed(() => {
-  return `/api/v3/discover/${type.value}`;
+  return `https://api.themoviedb.org/3/discover/${type.value}`;
 });
-const { data: discoverData, status: discoverStatus } = await useFetch<Discover>(
-  computedApi,
-
-  {
-    query: setQuery(),
-    watch: [
-      page,
-      type,
-      sort_by,
-      with_genres,
-      without_genres,
-      include_adult,
-      computedApi,
-    ],
-  }
-);
-
-const { data: genres } = await useFetch<Genre>(`/api/v3/genre/${type.value}`);
+const result = await useFetch<Discover>(computedApi, {
+  query: setQuery(),
+  watch: [type],
+});
 
 const getGenres = (ids: number[]) => {
   const list: any[] = [];
@@ -176,3 +122,70 @@ const getGenres = (ids: number[]) => {
   return list;
 };
 </script>
+<style>
+.loader {
+  width: 80px;
+  height: 40px;
+  border-radius: 0 0 100px 100px;
+  border: 5px solid #538a2d;
+  border-top: 0;
+  box-sizing: border-box;
+  background:
+    radial-gradient(farthest-side at top, #0000 calc(100% - 5px), #e7ef9d calc(100% - 4px)),
+    radial-gradient(2px 3px, #5c4037 89%, #0000) 0 0/17px 12px,
+    #ff1643;
+  --c: radial-gradient(farthest-side, #000 94%, #0000);
+  -webkit-mask:
+    linear-gradient(#0000 0 0),
+    var(--c) 12px -8px,
+    var(--c) 29px -8px,
+    var(--c) 45px -6px,
+    var(--c) 22px -2px,
+    var(--c) 34px 6px,
+    var(--c) 21px 6px,
+    linear-gradient(#000 0 0);
+  mask:
+    linear-gradient(#000 0 0),
+    var(--c) 12px -8px,
+    var(--c) 29px -8px,
+    var(--c) 45px -6px,
+    var(--c) 22px -2px,
+    var(--c) 34px 6px,
+    var(--c) 21px 6px,
+    linear-gradient(#0000 0 0);
+  -webkit-mask-composite: destination-out;
+  mask-composite: exclude, add, add, add, add, add, add;
+  animation: l8 3s infinite;
+}
+
+@keyframes l8 {
+  0% {
+    -webkit-mask-size: auto, 0 0, 0 0, 0 0, 0 0, 0 0, 0 0
+  }
+
+  15% {
+    -webkit-mask-size: auto, 20px 20px, 0 0, 0 0, 0 0, 0 0, 0 0
+  }
+
+  30% {
+    -webkit-mask-size: auto, 20px 20px, 20px 20px, 0 0, 0 0, 0 0, 0 0
+  }
+
+  45% {
+    -webkit-mask-size: auto, 20px 20px, 20px 20px, 20px 20px, 0 0, 0 0, 0 0
+  }
+
+  60% {
+    -webkit-mask-size: auto, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 0 0, 0 0
+  }
+
+  75% {
+    -webkit-mask-size: auto, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 0 0
+  }
+
+  90%,
+  100% {
+    -webkit-mask-size: auto, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px, 20px 20px
+  }
+}
+</style>

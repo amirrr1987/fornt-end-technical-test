@@ -19,6 +19,7 @@
     "@vueuse/core": "^11.1.0",
     "@vueuse/nuxt": "^11.1.0",
     "@vueuse/router": "^11.1.0",
+    "dayjs-nuxt": "^2.1.11",
     "nuxt": "^3.13.0",
     "nuxt-typed-router": "^3.7.0",
     "pinia": "^2.2.4",
