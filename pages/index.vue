@@ -64,7 +64,20 @@
       </div>
 
       <div class="flex justify-center md:justify-start">
-        <UPagination class="my-6" v-model="page" :total="500" show-first show-last />
+        <UPagination class="my-6" v-model="page" :total="500" show-first show-last 
+
+:to="(page: number) => ({
+      query: { page },
+      // Hash is specified here to prevent the page from scrolling to the top
+      hash: '#links'
+    })"
+
+/>
+
+
+
+
+
       </div>
     </TheContainer>
   </TheSection>
