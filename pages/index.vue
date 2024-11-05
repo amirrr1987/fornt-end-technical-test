@@ -3,10 +3,9 @@
 
   <TheSection>
     <TheContainer>
-      <div class="flex gap-x-8 mb-4">
-        <UButton @click="result.refresh()" icon="i-heroicons-arrow-path" />
-        <UButton @click="result.clear()" icon="i-heroicons-trash" />
-        <URadioGroup v-model="type" :options="typeOptions" />
+
+
+      <UForm class="flex flex-wrap gap-4 mb-12">
 
         <UFormGroup label="Width Genres">
           <USelectMenu v-model="withGenresValue" :options="genres?.genres" option-attribute="name" valueAttribute="id"
@@ -18,10 +17,23 @@
             valueAttribute="id" class="block !w-44" multiple />
         </UFormGroup>
 
-        <UPagination class="my-6" v-model="page" :total="500" show-first show-last />
 
-      </div>
-      <div class="">
+        <UFormGroup label="Type">
+          <URadioGroup v-model="type" :options="typeOptions" :ui="{
+            fieldset: 'flex flex-row ',
+          }" :uiRadio="{
+            base: 'hidden',
+          }
+            ">
+            <template #label="label">
+              <UButton class="w-14" :class="getColor(label.option.value)" :label="label.option.label"
+                :icon="label.option.icon" @click="() => type = label.option.value" />
+            </template>
+          </URadioGroup>
+        </UFormGroup>
+      </UForm>
+
+      <div>
 
         <template v-if="result.status.value === 'error'"> error </template>
         <template v-if="result.status.value === 'pending'">
@@ -44,6 +56,9 @@
         </template>
       </div>
 
+      <div class="flex justify-center md:justify-start">
+        <UPagination class="my-6" v-model="page" :total="500" show-first show-last />
+      </div>
 
 
     </TheContainer>
@@ -121,6 +136,10 @@ const getGenres = (ids: number[]) => {
   });
   return list;
 };
+
+const getColor = (value: string) => {
+  return type.value == value ? '!bg-primary-500' : '!bg-primary-200'
+}
 </script>
 <style>
 .loader {
