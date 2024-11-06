@@ -3,40 +3,70 @@
     <TheContainer>
       <UForm class="flex flex-wrap gap-4 mb-12">
         <UFormGroup label="Width Genres">
-          <USelectMenu v-model="withGenresValue" :options="genres?.genres" option-attribute="name" valueAttribute="id"
-            class="block !w-44" multiple />
+          <USelectMenu
+            v-model="withGenresValue"
+            :options="genres?.genres"
+            option-attribute="name"
+            value-attribute="id"
+            class="block !w-44"
+            multiple
+          />
         </UFormGroup>
 
         <UFormGroup label="Without Genres">
-          <USelectMenu v-model="withoutGenresValue" :options="genres?.genres" option-attribute="name"
-            valueAttribute="id" class="block !w-44" multiple />
+          <USelectMenu
+            v-model="withoutGenresValue"
+            :options="genres?.genres"
+            option-attribute="name"
+            value-attribute="id"
+            class="block !w-44"
+            multiple
+          />
         </UFormGroup>
 
         <UFormGroup label="Type">
-          <URadioGroup v-model="type" :options="typeOptions" :ui="{
-            fieldset: 'flex flex-row ',
-          }" :uiRadio="{
-            base: 'hidden',
-          }">
+          <URadioGroup
+            v-model="type"
+            :options="typeOptions"
+            :ui="{
+              fieldset: 'flex flex-row ',
+            }"
+            :ui-radio="{
+              base: 'hidden',
+            }"
+          >
             <template #label="label">
-              <UButton class="w-14" :class="getColor(label.option.value)" :label="label.option.label"
-                :icon="label.option.icon" @click="() => (type = label.option.value)" />
+              <UButton
+                class="w-14"
+                :class="getColor(label.option.value)"
+                :label="label.option.label"
+                :icon="label.option.icon"
+                @click="() => (type = label.option.value)"
+              />
             </template>
           </URadioGroup>
         </UFormGroup>
       </UForm>
 
       <div class="mb-12 flex gap-x-12">
-        <UFormGroup label="Width genres"  v-if="withGenresValue.length > 0">
-          <UButton v-for="genre in getGenres(withGenresValue)"
-            @click="useRemove(withGenresValue, (g) => g === genre.id)" icon="i-heroicons-x-mark">
+        <UFormGroup v-if="withGenresValue.length > 0" label="Width genres">
+          <UButton
+            v-for="genre in getGenres(withGenresValue)"
+            :key="genre.id"
+            icon="i-heroicons-x-mark"
+            @click="useRemove(withGenresValue, (g) => g === genre.id)"
+          >
             {{ genre.name }}
           </UButton>
         </UFormGroup>
 
-        <UFormGroup label="Width genres" v-if="withoutGenresValue.length> 0">
-          <UButton v-for="genre in getGenres(withoutGenresValue)"
-            @click="useRemove(withoutGenresValue, (g) => g === genre.id)" icon="i-heroicons-x-mark">
+        <UFormGroup v-if="withoutGenresValue.length > 0" label="Width genres">
+          <UButton
+            v-for="genre in getGenres(withoutGenresValue)"
+            :key="genre.id"
+            icon="i-heroicons-x-mark"
+            @click="useRemove(withoutGenresValue, (g) => g === genre.id)"
+          >
             {{ genre.name }}
           </UButton>
         </UFormGroup>
@@ -45,39 +75,55 @@
       <div>
         <template v-if="result.status.value === 'error'"> error </template>
         <template v-if="result.status.value === 'pending'">
-          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
-            <USkeleton class="h-24 sm:h-26 lg:h-28 w-full" v-for="item in 5" />
+          <div
+            class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
+          >
+            <USkeleton
+              v-for="item in 5"
+              :key="item"
+              class="h-24 sm:h-26 lg:h-28 w-full"
+            />
           </div>
         </template>
         <template v-if="result.status.value === 'success'">
-          <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
+          <div
+            class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8"
+          >
             <template v-if="type === 'movie'">
-              <MovieCard v-for="item in result.data.value?.results" :movie="item as MovieItem"
-                :genres="getGenres(item.genre_ids)" />
+              <MovieCard
+                v-for="item in result.data.value?.results"
+                :key="item.id"
+                :movie="(item as MovieItem)"
+                :genres="getGenres(item.genre_ids)"
+              />
             </template>
             <template v-if="type === 'tv'">
-              <TvCard v-for="item in result.data.value?.results" :tv="item as TvItem"
-                :genres="getGenres(item.genre_ids)" />
+              <TvCard
+                v-for="item in result.data.value?.results"
+                :key="item.id"
+                :tv="(item as TvItem)"
+                :genres="getGenres(item.genre_ids)"
+              />
             </template>
           </div>
         </template>
       </div>
 
       <div class="flex justify-center md:justify-start">
-        <UPagination class="my-6" v-model="page" :total="500" show-first show-last 
-
-:to="(page: number) => ({
-      query: { page },
-      // Hash is specified here to prevent the page from scrolling to the top
-      hash: '#links'
-    })"
-
-/>
-
-
-
-
-
+        <UPagination
+          v-model="page"
+          class="my-6"
+          :total="500"
+          show-first
+          show-last
+          :to="
+            (page: number) => ({
+              query: { page },
+              // Hash is specified here to prevent the page from scrolling to the top
+              hash: '#links',
+            })
+          "
+        />
       </div>
     </TheContainer>
   </TheSection>
@@ -161,9 +207,11 @@ const getColor = (value: string) => {
   border-top: 0;
   box-sizing: border-box;
   background:
-    radial-gradient(farthest-side at top,
+    radial-gradient(
+      farthest-side at top,
       #0000 calc(100% - 5px),
-      #e7ef9d calc(100% - 4px)),
+      #e7ef9d calc(100% - 4px)
+    ),
     radial-gradient(2px 3px, #5c4037 89%, #0000) 0 0/17px 12px,
     #ff1643;
   --c: radial-gradient(farthest-side, #000 94%, #0000);
