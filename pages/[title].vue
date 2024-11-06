@@ -1,46 +1,55 @@
 <template>
   <TheSection class="the-single">
-    <TheContainer class="flex gap-4">
+    <TheContainer class="md:flex gap-4">
       <div>
-        <img class="rounded shadow" :src="posterImg" alt="dfg" >
+        <img class="rounded shadow" :src="posterImg" alt="dfg" />
       </div>
-      <div>
-        <div class="flex gap-4">
-          <div>Adult</div>
+      <div class="space-y-12">
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Title</div>
+          <div>{{ movieData?.title }}</div>
+        </div>
+
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Overview</div>
+          <div>{{ movieData?.overview }}</div>
+        </div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Adult</div>
           <div>{{ movieData?.adult }}</div>
         </div>
 
-        <div class="flex gap-4">
-          <div>Belongs To Collection</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Belongs To Collection</div>
           <div>{{ movieData?.belongs_to_collection }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Budget</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Budget</div>
           <div>
             {{ movieData?.budget }}
           </div>
         </div>
-        <div class="flex gap-4">
-          <div>Genres</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Genres</div>
           <div class="space-x-4">
             <UBadge v-for="genre in movieData?.genres" :key="genre.id">
               {{ genre.name }}
             </UBadge>
           </div>
         </div>
-        <div class="flex gap-4">
-          <div>Homepage</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Homepage</div>
           <div>{{ movieData?.homepage }}</div>
         </div>
-        <div class="flex gap-4">
+        <div class="flex flex-col lg:flex-row gap-2">
           <div>Id</div>
           <div>{{ movieData?.id }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Imdb Id</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Imdb Id</div>
           <div>{{ movieData?.imdb_id }}</div>
         </div>
-        <div class="flex gap-4">
+        <div class="flex flex-col lg:flex-row gap-2">
           <div>Origin Country</div>
           <div class="space-x-4">
             <UBadge v-for="country in movieData?.origin_country" :key="country">
@@ -48,42 +57,43 @@
             </UBadge>
           </div>
         </div>
-        <div class="flex gap-4">
-          <div>Original Language</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Original Language</div>
           <div>{{ movieData?.original_language }}</div>
         </div>
-        <div class="flex gap-4">
+        <div class="flex flex-col lg:flex-row gap-2">
           <div>Original Title</div>
           <div>{{ movieData?.original_title }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Overview</div>
-          <div>{{ movieData?.overview }}</div>
-        </div>
-        <div class="flex gap-4">
-          <div>Popularity</div>
+
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Popularity</div>
           <div>{{ movieData?.popularity }}</div>
         </div>
-        <div class="flex gap-4">
+        <div class="flex flex-col lg:flex-row gap-2">
           <div>Poster Path</div>
           <div>{{ movieData?.poster_path }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Production Companies</div>
-          <div class="flex">
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Production Companies</div>
+          <div class="flex flex-wrap gap-4">
             <UCard
               v-for="(company, index) in movieData?.production_companies"
               :key="index"
             >
               <template #header>
-                <img :src="getLogoImg(company.logo_path)" alt="" />
+                <img
+                  :src="getLogoImg(company.logo_path ?? '')"
+                  :alt="company.name"
+                  :title="company.name"
+                />
               </template>
               {{ company.name }}
             </UCard>
           </div>
         </div>
-        <div class="flex gap-4">
-          <div>Production Countries</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Production Countries</div>
           <div class="space-x-4">
             <span
               v-for="(country, index) in movieData?.production_countries"
@@ -93,20 +103,20 @@
             </span>
           </div>
         </div>
-        <div class="flex gap-4">
-          <div>Release Date</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Release Date</div>
           <div>{{ movieData?.release_date }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Revenue</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Revenue</div>
           <div>{{ movieData?.revenue }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Runtime</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Runtime</div>
           <div>{{ movieData?.runtime }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Spoken Languages</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Spoken Languages</div>
           <div class="space-x-4">
             <UBadge
               v-for="(language, index) in movieData?.spoken_languages"
@@ -116,28 +126,25 @@
             </UBadge>
           </div>
         </div>
-        <div class="flex gap-4">
-          <div>Status</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Status</div>
           <div>{{ movieData?.status }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Tagline</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Tagline</div>
           <div>{{ movieData?.tagline }}</div>
         </div>
+
         <div class="flex gap-4">
-          <div>Title</div>
-          <div>{{ movieData?.title }}</div>
-        </div>
-        <div class="flex gap-4">
-          <div>Video</div>
+          <div class="text-gray-400">Video</div>
           <div>{{ movieData?.video }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Vote Average</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Vote Average</div>
           <div>{{ movieData?.vote_average }}</div>
         </div>
-        <div class="flex gap-4">
-          <div>Vote Count</div>
+        <div class="flex flex-col lg:flex-row gap-2">
+          <div class="text-gray-400">Vote Count</div>
           <div>{{ movieData?.vote_count }}</div>
         </div>
       </div>
