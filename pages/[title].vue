@@ -4,7 +4,7 @@
       <div>
         <img class="rounded shadow" :src="posterImg" alt="dfg" />
       </div>
-      <div class="space-y-12">
+      <div class="space-y-12 text-white">
         <div class="flex flex-col lg:flex-row gap-2">
           <div class="text-gray-400">Title</div>
           <div>{{ movieData?.title }}</div>
