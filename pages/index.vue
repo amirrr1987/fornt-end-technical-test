@@ -93,7 +93,7 @@
               <MovieCard
                 v-for="item in result.data.value?.results"
                 :key="item.id"
-                :movie="(item as MovieItem)"
+                :movie="item as MovieItem"
                 :genres="getGenres(item.genre_ids)"
               />
             </template>
@@ -101,7 +101,7 @@
               <TvCard
                 v-for="item in result.data.value?.results"
                 :key="item.id"
-                :tv="(item as TvItem)"
+                :tv="item as TvItem"
                 :genres="getGenres(item.genre_ids)"
               />
             </template>
@@ -120,7 +120,7 @@
             (page: number) => ({
               query: { page },
               // Hash is specified here to prevent the page from scrolling to the top
-              hash: '#links',
+              hash: '/',
             })
           "
         />
@@ -160,10 +160,22 @@ watch(
   withoutGenresComputed,
   () => (without_genres.value = withoutGenresComputed.value)
 );
+
 const without_genres = useRouteQuery<string>("without_genres", "");
 
 const page = useRouteQuery("page", "1", {
   transform: Number,
+});
+
+watch(page, async () => {
+  // await result.refresh();
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  });
+});
+watch(type, () => {
+  page.value = 1;
 });
 const api_key = ref("55ee9c566996339d9859d1ec68533e20");
 const setQuery = () => {
