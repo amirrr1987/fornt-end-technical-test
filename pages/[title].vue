@@ -178,12 +178,16 @@ const { data: movieData } = await useFetch<Movie>(
 const configuration = await useFetch("/api/v3/configuration");
 console.log();
 
+useHead({
+  title: `the-movie | ${route.params.title}`,
+  // meta: [{}],
+});
+
 const images = computed(() => configuration.data.value?.images);
 const baseUrl = computed(() => images.value?.base_url);
 const backdropSizes = computed(() => images.value?.backdrop_sizes);
 const posterSizes = computed(() => images.value?.poster_sizes);
 const logoSizes = computed(() => images.value?.logo_sizes);
-console.log(logoSizes.value);
 
 const getLogoImg = (img: string) => {
   return `${baseUrl.value}${logoSizes.value[3]}${img}`;
