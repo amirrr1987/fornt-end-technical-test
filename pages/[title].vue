@@ -176,12 +176,6 @@ const { data: movieData } = await useFetch<Movie>(
   `/api/v3/find/movie/${route.query.id}`
 );
 const configuration = await useFetch("/api/v3/configuration");
-console.log();
-
-useHead({
-  title: `the-movie | ${route.params.title}`,
-  // meta: [{}],
-});
 
 const images = computed(() => configuration.data.value?.images);
 const baseUrl = computed(() => images.value?.base_url);
@@ -204,6 +198,58 @@ const backdropImg = computed(() => {
 });
 const posterImg = computed(() => {
   return `${getPosterImg(movieData.value?.poster_path ?? "")}`;
+});
+
+useHead({
+  title: `the-movie | ${movieData.value?.title || "Movie Details"}`,
+  meta: [
+    {
+      name: "description",
+      content: movieData.value?.overview ?? "A detailed view of the movie.",
+    },
+    {
+      name: "keywords",
+      content:
+        movieData.value?.genres.map((genre) => genre.name).join(", ") ??
+        "movies, genres, film, cinema",
+    },
+    {
+      property: "og:title",
+      content: `the-movie | ${movieData.value?.title || "Movie Details"}`,
+    },
+    {
+      property: "og:description",
+      content: movieData.value?.overview ?? "A detailed view of the movie.",
+    },
+    {
+      property: "og:image",
+      content: posterImg.value || "default-poster.jpg",
+    },
+    {
+      property: "og:type",
+      content: "movie",
+    },
+    {
+      property: "og:url",
+      content: `https://yourwebsite.com/movie/${route.query.id}`, 
+    },
+    {
+      name: "twitter:card",
+      content: "summary_large_image",
+    },
+    {
+      name: "twitter:title",
+      content: `the-movie | ${movieData.value?.title || "Movie Details"}`,
+    },
+    {
+      name: "twitter:description",
+      content: movieData.value?.overview ?? "A detailed view of the movie.",
+    },
+    {
+      name: "twitter:image",
+      content: posterImg.value || "default-poster.jpg",
+    },
+  ],
 });
 </script>
 <style>
