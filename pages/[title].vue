@@ -22,6 +22,25 @@
         <div class="flex flex-col lg:flex-row gap-2">
           <div class="text-gray-400">Belongs To Collection</div>
           <div>{{ movieData?.belongs_to_collection }}</div>
+
+          <div class="flex flex-wrap gap-4">
+            <UCard style="">
+              <template #header>
+                <img
+                class="w-20"
+                  :src="
+                    getPosterImg(
+                      movieData?.belongs_to_collection.poster_path ?? ''
+                    )
+                  "
+                  :title="movieData?.belongs_to_collection.name"
+                  :alt="movieData?.belongs_to_collection.name"
+                />
+              </template>
+              {{ movieData?.belongs_to_collection.name }}
+          
+            </UCard>
+          </div>
         </div>
         <div class="flex flex-col lg:flex-row gap-2">
           <div class="text-gray-400">Budget</div>
@@ -172,11 +191,18 @@ console.log(logoSizes.value);
 const getLogoImg = (img: string) => {
   return `${baseUrl.value}${logoSizes.value[3]}${img}`;
 };
+const getBackdropImg = (img: string) => {
+  return `${baseUrl.value}${backdropSizes.value[3]}${img}`;
+};
+const getPosterImg = (img: string) => {
+  return `${baseUrl.value}${posterSizes.value[6] ?? ""}${img}`;
+};
+
 const backdropImg = computed(() => {
-  return `url(${baseUrl.value}${backdropSizes.value[3]}${movieData.value?.backdrop_path})`;
+  return `url(${getBackdropImg(movieData.value?.backdrop_path ?? "")})`;
 });
 const posterImg = computed(() => {
-  return `${baseUrl.value}${posterSizes.value[6] ?? ""}${movieData.value?.poster_path}`;
+  return `${getPosterImg(movieData.value?.poster_path ?? "")}`;
 });
 </script>
 <style>
