@@ -1,6 +1,6 @@
 <template>
   <TheSection class="the-single">
-    <TheContainer class="md:flex gap-4">
+    <TheContainer class="flex flex-col md:flex-row gap-8">
       <div>
         <img class="rounded shadow" :src="posterImg" alt="dfg" />
       </div>
@@ -21,16 +21,14 @@
 
         <div class="flex flex-col lg:flex-row gap-2">
           <div class="text-gray-400">Belongs To Collection</div>
-          <div>{{ movieData?.belongs_to_collection }}</div>
-
           <div class="flex flex-wrap gap-4">
             <UCard style="">
               <template #header>
                 <img
-                class="w-20"
+                  class="w-40"
                   :src="
-                    getPosterImg(
-                      movieData?.belongs_to_collection.poster_path ?? ''
+                    getBackdropImg(
+                      movieData?.belongs_to_collection.backdrop_path ?? ''
                     )
                   "
                   :title="movieData?.belongs_to_collection.name"
@@ -38,7 +36,6 @@
                 />
               </template>
               {{ movieData?.belongs_to_collection.name }}
-          
             </UCard>
           </div>
         </div>
