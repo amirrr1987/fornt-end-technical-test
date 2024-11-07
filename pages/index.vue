@@ -93,7 +93,7 @@
               <MovieCard
                 v-for="item in result.data.value?.results"
                 :key="item.id"
-                :movie="item as MovieItem"
+                :movie="(item as MovieItem)"
                 :genres="getGenres(item.genre_ids)"
               />
             </template>
@@ -101,7 +101,7 @@
               <TvCard
                 v-for="item in result.data.value?.results"
                 :key="item.id"
-                :tv="item as TvItem"
+                :tv="(item as TvItem)"
                 :genres="getGenres(item.genre_ids)"
               />
             </template>
