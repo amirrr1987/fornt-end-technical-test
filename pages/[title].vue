@@ -256,8 +256,8 @@ useHead({
 .the-single {
   background-image: v-bind(backdropImg);
   background-size: cover;
-  min-height: 100vh;
   background-blend-mode: darken;
-  background-color: rgb(0 0 0 / 70%);
+  min-height: 100vh;
+  background-color: rgb(0 0 0 / 50%);
 }
 </style>
